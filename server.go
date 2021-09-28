@@ -2,18 +2,20 @@ package main
 
 import (
 	"fmt"
-	"html"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
-
-	http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "HI")
+		for name, values := range r.Header {
+			w.Header().Set(name, strings.Join(values, ","))
+			for _, value := range values {
+				fmt.Println(name, value)
+			}
+		}
+		w.WriteHeader(http.StatusOK)
 	})
 
 	log.Fatal(http.ListenAndServe(":8081", nil))
