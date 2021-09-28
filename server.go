@@ -25,7 +25,12 @@ func main() {
 		}
 		fmt.Println(ver)
 		w.Header().Set("VERSION", ver)
-		w.WriteHeader(http.StatusOK)
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	http.HandleFunc("/localhost/healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
 	})
 
 	log.Fatal(http.ListenAndServe(":8081", nil))
