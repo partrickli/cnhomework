@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
 func main() {
+	ver := os.Getenv("VERSION")
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		for name, values := range r.Header {
 			w.Header().Set(name, strings.Join(values, ","))
@@ -15,6 +18,8 @@ func main() {
 				fmt.Println(name, value)
 			}
 		}
+		fmt.Println(ver)
+		w.Header().Set("VERSION", ver)
 		w.WriteHeader(http.StatusOK)
 	})
 
